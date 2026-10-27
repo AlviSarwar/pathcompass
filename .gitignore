@@ -1,0 +1,4 @@
+
+backend/staticfiles/
+.pytest_cache/
+

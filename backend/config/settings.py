@@ -15,17 +15,29 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import os
+
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
+
+load_dotenv(BASE_DIR / ".env", encoding="utf-8-sig")
+load_dotenv(BASE_DIR.parent / ".env", encoding="utf-8-sig")
+
+
+def env_list(name, default=""):
+    return [v.strip() for v in os.environ.get(name, default).split(",") if v.strip()]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7zn8n3)6=-o$ge27m58e#2j-pb(me(w8nil_-9#*nd00-8ka@r'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
 
 
 # Application definition
@@ -138,13 +150,30 @@ MAILERS = {
 
 
 # --- PathCompass settings ---
-CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
+CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS", "http://localhost:5173")
 
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication'],
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    'DEFAULT_THROTTLE_RATES': {'auth': '20/min', 'demo': '10/hour'},
 }
 
 TIME_ZONE = 'Asia/Dhaka'
 
+
+
+# --- Phase 6: deployment settings (all from the environment) ---
+import dj_database_url  # noqa: E402
+
+if not SECRET_KEY:
+    raise ImproperlyConfigured("Set DJANGO_SECRET_KEY in .env (copy .env.example and edit it).")
+
+if os.environ.get("DATABASE_URL"):
+    DATABASES["default"] = dj_database_url.parse(os.environ["DATABASE_URL"], conn_max_age=600)
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+if not DEBUG:
+    MIDDLEWARE.insert(MIDDLEWARE.index("django.middleware.security.SecurityMiddleware") + 1,
+                      "whitenoise.middleware.WhiteNoiseMiddleware")

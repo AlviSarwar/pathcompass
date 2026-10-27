@@ -1,4 +1,6 @@
 from rest_framework import generics
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -9,6 +11,9 @@ from .serializers import ProfileSerializer, RegisterSerializer
 
 
 class RegisterView(APIView):
+    authentication_classes = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -30,6 +35,8 @@ from .demo import create_demo_user  # noqa: E402
 
 
 class DemoView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "demo"
     permission_classes = [AllowAny]
     authentication_classes = []   # a stale token in the browser must not block the demo
 
@@ -37,3 +44,9 @@ class DemoView(APIView):
         user = create_demo_user()
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"token": token.key}, status=201)
+
+
+class LoginView(ObtainAuthToken):
+    authentication_classes = []   # a stale token in the browser must not block logging in
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
