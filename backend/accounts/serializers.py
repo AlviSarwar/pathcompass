@@ -34,4 +34,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProfile
         fields = ["university", "department", "degree_name", "total_credits_required",
-                  "target_cgpa", "retake_policy", "rounding_places", "career_track"]
+                  "target_cgpa", "retake_policy", "rounding_places", "career_track",
+                  "probation_cgpa", "deans_list_cgpa", "max_credits_per_semester", "is_demo"]
+        read_only_fields = ["is_demo"]
+

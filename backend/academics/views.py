@@ -69,3 +69,48 @@ class TargetView(APIView):
             return Response(build_target(profile, Decimal(str(raw))))
         except (ValueError, InvalidOperation) as exc:
             return Response({"detail": str(exc) or "Invalid target."}, status=400)
+
+
+# ---------- Phase 2 ----------
+from django.http import HttpResponse  # noqa: E402
+
+from .insights import build_credit_plan, build_retake_impact, build_safe_zone  # noqa: E402
+from .report import build_pdf  # noqa: E402
+from .services import scale_limits  # noqa: E402
+
+
+class RetakeImpactView(APIView):
+    def get(self, request):
+        profile = ensure_profile(request.user)
+        max_point, _ = scale_limits(profile)
+        try:
+            gp = Decimal(str(request.query_params.get("grade_point", max_point)))
+            if not (0 < gp <= max_point):
+                raise ValueError
+        except (InvalidOperation, ValueError):
+            return Response({"detail": f"Grade point must be above 0 and at most {max_point}."}, status=400)
+        return Response(build_retake_impact(profile, gp))
+
+
+class SafeZoneView(APIView):
+    def get(self, request):
+        return Response(build_safe_zone(ensure_profile(request.user)))
+
+
+class CreditPlanView(APIView):
+    def get(self, request):
+        return Response(build_credit_plan(ensure_profile(request.user)))
+
+
+class ReportPdfView(APIView):
+    def get(self, request):
+        profile = ensure_profile(request.user)
+        dash = build_dashboard(profile)
+        try:
+            target = build_target(profile, profile.target_cgpa)
+        except ValueError:
+            target = None
+        pdf = build_pdf(profile, dash, target, build_safe_zone(profile), build_credit_plan(profile))
+        resp = HttpResponse(pdf, content_type="application/pdf")
+        resp["Content-Disposition"] = 'attachment; filename="pathcompass-report.pdf"'
+        return resp

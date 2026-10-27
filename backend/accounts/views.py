@@ -24,3 +24,16 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return ensure_profile(self.request.user)
+
+
+from .demo import create_demo_user  # noqa: E402
+
+
+class DemoView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []   # a stale token in the browser must not block the demo
+
+    def post(self, request):
+        user = create_demo_user()
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key}, status=201)
