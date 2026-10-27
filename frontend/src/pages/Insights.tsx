@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, errorText } from '../api'
 import SafeZoneCard from '../components/SafeZoneCard'
+import WhatIfCard from '../components/WhatIfCard'
 import { Card } from '../components/ui'
 import { btnCls, errCls, inputCls } from '../styles'
 import type { CreditPlan, RetakeImpact } from '../types'
@@ -43,6 +44,7 @@ export default function Insights() {
     <>
       {error && <p className={errCls}>{error}</p>}
       <SafeZoneCard />
+      <WhatIfCard />
 
       <Card title="Retake impact: which retake helps your CGPA most?">
         <form onSubmit={submit} className="flex flex-wrap items-center gap-2">
@@ -107,3 +109,4 @@ export default function Insights() {
     </>
   )
 }
+

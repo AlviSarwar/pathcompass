@@ -16,3 +16,18 @@ class SkillSerializer(serializers.ModelSerializer):
         if qs.exists():
             raise serializers.ValidationError("You already track this skill.")
         return value
+
+
+from .models import Application, Project  # noqa: E402
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ["id", "name", "github_url", "status", "tech_stack", "notes"]
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ["id", "company", "role", "applied_date", "deadline", "status", "link", "notes"]

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { api, downloadReport, errorText } from '../api'
+import { setLang, useT } from '../i18n'
 import { isDark, setDark } from '../theme'
 
 const links = [
@@ -8,11 +9,18 @@ const links = [
   { to: '/courses', label: 'Semesters & Courses' },
   { to: '/target', label: 'Target CGPA' },
   { to: '/insights', label: 'Planner & Insights' },
+  { to: '/requirements', label: 'Requirements' },
   { to: '/skills', label: 'Skills' },
+  { to: '/projects', label: 'Projects' },
+  { to: '/applications', label: 'Applications' },
+  { to: '/scholarships', label: 'Scholarships' },
+  { to: '/scores', label: 'Test Scores' },
+  { to: '/documents', label: 'Documents' },
   { to: '/settings', label: 'Settings' },
 ]
 
 export default function Layout({ onLogout }: { onLogout: () => void }) {
+  const { lang, t } = useT()
   const [dark, setDarkState] = useState(isDark())
   const [demo, setDemo] = useState(false)
   const [error, setError] = useState('')
@@ -46,14 +54,17 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
                   `rounded px-3 py-1.5 text-sm ${isActive ? 'bg-emerald-500 font-semibold text-slate-900' : 'hover:bg-slate-700'}`
                 }
               >
-                {l.label}
+                {t(l.label)}
               </NavLink>
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-3 text-sm text-slate-300">
-            <button onClick={exportPdf} className="hover:text-white">Export PDF</button>
-            <button onClick={toggle} className="hover:text-white">{dark ? 'Light mode' : 'Dark mode'}</button>
-            <button onClick={onLogout} className="hover:text-white">Log out</button>
+            <button onClick={() => setLang(lang === 'en' ? 'bn' : 'en')} className="hover:text-white">
+              {lang === 'en' ? 'বাংলা' : 'English'}
+            </button>
+            <button onClick={exportPdf} className="hover:text-white">{t('Export PDF')}</button>
+            <button onClick={toggle} className="hover:text-white">{dark ? t('Light mode') : t('Dark mode')}</button>
+            <button onClick={onLogout} className="hover:text-white">{t('Log out')}</button>
           </div>
         </div>
       </header>

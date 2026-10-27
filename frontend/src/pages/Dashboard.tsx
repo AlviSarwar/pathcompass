@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { api, errorText } from '../api'
+import { useT } from '../i18n'
 import { Card, Stat } from '../components/ui'
 import SafeZoneCard from '../components/SafeZoneCard'
 import { errCls } from '../styles'
@@ -10,6 +11,7 @@ import type { DashboardData } from '../types'
 const fmt = (n: number | null) => (n === null ? '—' : n.toFixed(2))
 
 export default function Dashboard() {
+  const { t } = useT()
   const [data, setData] = useState<DashboardData | null>(null)
   const [error, setError] = useState('')
 
@@ -23,10 +25,10 @@ export default function Dashboard() {
   return (
     <>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Stat label="Current CGPA" value={fmt(data.cgpa)} hint={`out of ${data.max_point.toFixed(2)}`} />
-        <Stat label="Target CGPA" value={fmt(data.target_cgpa)} hint="change in Settings" />
-        <Stat label="Credits earned" value={String(data.credits_earned)} hint={`of ${data.total_credits_required} required`} />
-        <Stat label="Credits remaining" value={String(data.credits_remaining)} />
+        <Stat label={t('Current CGPA')} value={fmt(data.cgpa)} hint={`out of ${data.max_point.toFixed(2)}`} />
+        <Stat label={t('Target CGPA')} value={fmt(data.target_cgpa)} hint="change in Settings" />
+        <Stat label={t('Credits earned')} value={String(data.credits_earned)} hint={`of ${data.total_credits_required} required`} />
+        <Stat label={t('Credits remaining')} value={String(data.credits_remaining)} />
       </div>
 
       {data.semesters.length === 0 && (
@@ -45,7 +47,7 @@ export default function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <Card title="CGPA trend">
+          <Card title={t('CGPA trend')}>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data.semesters}>
@@ -61,7 +63,7 @@ export default function Dashboard() {
             </div>
           </Card>
         </div>
-        <Card title="Highlights">
+        <Card title={t('Highlights')}>
           <ul className="space-y-1 text-sm">
             <li>Completed semesters: <b>{data.completed_semesters}</b></li>
             <li>Best semester: <b>{data.best_semester ? `${data.best_semester.name} (${data.best_semester.gpa.toFixed(2)})` : '—'}</b></li>
@@ -76,7 +78,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card title="Semester results">
+      <Card title={t('Semester results')}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="text-slate-500">
@@ -94,10 +96,11 @@ export default function Dashboard() {
         </div>
       </Card>
 
-      <Card title="How this was calculated">
+      <Card title={t('How this was calculated')}>
         <p className="text-sm text-slate-600">{data.explanation}</p>
       </Card>
     </>
   )
 }
+
 

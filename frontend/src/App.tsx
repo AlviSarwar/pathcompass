@@ -8,6 +8,9 @@ import Dashboard from './pages/Dashboard'
 import Insights from './pages/Insights'
 import SettingsPage from './pages/SettingsPage'
 import Skills from './pages/Skills'
+import Documents from './pages/Documents'
+import Requirements from './pages/Requirements'
+import { Applications, Projects, Scholarships, TestScores } from './pages/Trackers'
 import Target from './pages/Target'
 
 export default function App() {
@@ -33,9 +36,17 @@ export default function App() {
           <Route path="/target" element={<Target />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/skills" element={<Skills />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/applications" element={<Applications />} />
+          <Route path="/scholarships" element={<Scholarships />} />
+          <Route path="/scores" element={<TestScores />} />
+          <Route path="/documents" element={<Documents />} />
+          <Route path="/requirements" element={<Requirements />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
   )
 }
+
+

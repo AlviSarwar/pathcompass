@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, errorText } from '../api'
+import ImportCard from '../components/ImportCard'
 import { Card } from '../components/ui'
 import { btnCls, errCls, inputCls } from '../styles'
 import type { Course, Scale, Semester } from '../types'
@@ -103,6 +104,8 @@ export default function Courses() {
         </Card>
       </div>
 
+      <ImportCard onDone={load} />
+
       {semesters.length === 0 && <p className="text-sm text-slate-500">Add a semester first, then add its courses.</p>}
 
       {semesters.map((s) => (
@@ -134,3 +137,4 @@ export default function Courses() {
     </>
   )
 }
+

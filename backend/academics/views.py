@@ -114,3 +114,50 @@ class ReportPdfView(APIView):
         resp = HttpResponse(pdf, content_type="application/pdf")
         resp["Content-Disposition"] = 'attachment; filename="pathcompass-report.pdf"'
         return resp
+
+
+# ---------- Phase 3 ----------
+from .csv_import import TEMPLATE, import_courses  # noqa: E402
+from .engine import apply_retake_policy, gpa, project_cgpa, quality_points, total_credits  # noqa: E402
+from .services import completed_results, f  # noqa: E402
+
+
+class WhatIfView(APIView):
+    """CGPA if one extra course (credits, grade point) were added. Treated as a NEW course."""
+
+    def get(self, request):
+        profile = ensure_profile(request.user)
+        max_point, _ = scale_limits(profile)
+        try:
+            credits = Decimal(str(request.query_params.get("credits", "3")))
+            gp = Decimal(str(request.query_params.get("grade_point", "0")))
+            if not (0 < credits <= 12) or not (0 <= gp <= max_point):
+                raise ValueError
+        except (InvalidOperation, ValueError):
+            return Response({"detail": f"Credits must be above 0 and up to 12; grade point 0 to {max_point}."},
+                            status=400)
+        places = profile.rounding_places
+        counted = apply_retake_policy(completed_results(request.user), profile.retake_policy)
+        current = gpa(counted, places)
+        after = project_cgpa(quality_points(counted), total_credits(counted), credits, gp, places)
+        return Response({"credits": float(credits), "grade_point": float(gp), "current_cgpa": f(current),
+                         "after_cgpa": f(after), "change": f(after - current) if current is not None else None})
+
+
+class ImportTemplateView(APIView):
+    def get(self, request):
+        resp = HttpResponse(TEMPLATE, content_type="text/csv")
+        resp["Content-Disposition"] = 'attachment; filename="pathcompass-courses-template.csv"'
+        return resp
+
+
+class ImportCoursesView(APIView):
+    def post(self, request):
+        text = request.data.get("csv")
+        if not isinstance(text, str) or not text.strip():
+            return Response({"detail": "Send the CSV text in the 'csv' field."}, status=400)
+        count, errors = import_courses(request.user, ensure_profile(request.user), text)
+        if errors:
+            return Response({"detail": "Nothing was imported. Fix these rows and try again.", "errors": errors},
+                            status=400)
+        return Response({"imported": count}, status=201)
