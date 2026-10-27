@@ -16,6 +16,7 @@ const links = [
   { to: '/scholarships', label: 'Scholarships' },
   { to: '/scores', label: 'Test Scores' },
   { to: '/documents', label: 'Documents' },
+  { to: '/recommendations', label: 'LORs' },
   { to: '/settings', label: 'Settings' },
 ]
 
@@ -80,3 +81,4 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
     </div>
   )
 }
+

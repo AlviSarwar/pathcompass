@@ -10,7 +10,7 @@ import SettingsPage from './pages/SettingsPage'
 import Skills from './pages/Skills'
 import Documents from './pages/Documents'
 import Requirements from './pages/Requirements'
-import { Applications, Projects, Scholarships, TestScores } from './pages/Trackers'
+import { Applications, Projects, Recommendations, Scholarships, TestScores } from './pages/Trackers'
 import Target from './pages/Target'
 
 export default function App() {
@@ -41,6 +41,7 @@ export default function App() {
           <Route path="/scholarships" element={<Scholarships />} />
           <Route path="/scores" element={<TestScores />} />
           <Route path="/documents" element={<Documents />} />
+          <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/requirements" element={<Requirements />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
@@ -48,5 +49,6 @@ export default function App() {
     </BrowserRouter>
   )
 }
+
 
 

@@ -57,3 +57,18 @@ export function TestScores() {
       ]} />
   )
 }
+
+export function Recommendations() {
+  return (
+    <Tracker title="Recommendation letters (LORs)" endpoint="/recommendations/" statusKey="status"
+      empty="No letters yet. Ask recommenders early, and give them your CV and deadlines."
+      fields={[
+        { key: 'recommender', label: 'Recommender', required: true },
+        { key: 'relationship', label: 'Relationship (e.g. Professor, CSE201)' },
+        { key: 'asked_date', label: 'Date asked', type: 'date' },
+        { key: 'due_date', label: 'Needed by', type: 'date' },
+        { key: 'status', label: 'Status', type: 'select', options: ['to_ask', 'asked', 'agreed', 'submitted', 'declined'] },
+        { key: 'notes', label: 'Notes', type: 'textarea' },
+      ]} />
+  )
+}

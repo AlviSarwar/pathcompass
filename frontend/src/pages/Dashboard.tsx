@@ -4,6 +4,7 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 import { api, errorText } from '../api'
 import { useT } from '../i18n'
 import { Card, Stat } from '../components/ui'
+import DeadlineBanner from '../components/DeadlineBanner'
 import SafeZoneCard from '../components/SafeZoneCard'
 import { errCls } from '../styles'
 import type { DashboardData } from '../types'
@@ -43,6 +44,7 @@ export default function Dashboard() {
         <p key={w} className="rounded bg-amber-100 p-3 text-sm text-amber-900">{w}</p>
       ))}
 
+      <DeadlineBanner />
       <SafeZoneCard />
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -102,5 +104,6 @@ export default function Dashboard() {
     </>
   )
 }
+
 
 

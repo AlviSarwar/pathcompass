@@ -36,3 +36,19 @@ class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = ["id", "name", "status", "due_date", "notes"]
+
+
+from .models import Recommendation  # noqa: E402
+
+
+class RecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recommendation
+        fields = ["id", "recommender", "relationship", "asked_date", "due_date", "status", "notes"]
+
+    def validate(self, attrs):
+        asked = attrs.get("asked_date", getattr(self.instance, "asked_date", None))
+        due = attrs.get("due_date", getattr(self.instance, "due_date", None))
+        if asked and due and due < asked:
+            raise serializers.ValidationError({"due_date": "The due date cannot be before the date you asked."})
+        return attrs

@@ -43,3 +43,12 @@ class DocumentViewSet(_Owned):
         new = [Document(user=request.user, name=n) for n in STARTER_DOCUMENTS if n.lower() not in have]
         Document.objects.bulk_create(new)
         return Response({"added": len(new)}, status=201)
+
+
+from .models import Recommendation  # noqa: E402
+from .serializers import RecommendationSerializer  # noqa: E402
+
+
+class RecommendationViewSet(_Owned):
+    model = Recommendation
+    serializer_class = RecommendationSerializer

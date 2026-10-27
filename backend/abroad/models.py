@@ -57,3 +57,23 @@ class Document(models.Model):
 
     class Meta:
         ordering = ["id"]
+
+
+class Recommendation(models.Model):
+    class Status(models.TextChoices):
+        TO_ASK = "to_ask", "To ask"
+        ASKED = "asked", "Asked"
+        AGREED = "agreed", "Agreed to write"
+        SUBMITTED = "submitted", "Submitted"
+        DECLINED = "declined", "Declined"
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="recommendations")
+    recommender = models.CharField(max_length=150)
+    relationship = models.CharField(max_length=150, blank=True)
+    asked_date = models.DateField(null=True, blank=True)
+    due_date = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.TO_ASK)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["id"]
