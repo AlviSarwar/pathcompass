@@ -2,3 +2,5 @@
 backend/staticfiles/
 .pytest_cache/
 
+
+.env
