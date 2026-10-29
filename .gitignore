@@ -4,3 +4,8 @@ backend/staticfiles/
 
 
 .env
+
+backend/db.sqlite3
+*.sqlite3
+frontend/vite.config.js
+frontend/vite.config.d.ts
