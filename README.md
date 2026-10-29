@@ -100,3 +100,10 @@ All endpoints are under `/api/` and need `Authorization: Token <token>` except t
 ## Roadmap
 
 Link requirement groups to courses, email deadline reminders, a PWA, full Bangla translation, and a deployed demo. See `docs/DEPLOYMENT.md`.
+
+## Live demo
+
+- App: https://pathcompass.vercel.app (press **Try the demo**)
+- API: https://pathcompass.onrender.com
+
+The backend runs on Render's free plan, so the first request after a period of inactivity can take about a minute.
